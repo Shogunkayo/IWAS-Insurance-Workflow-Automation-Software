@@ -5,7 +5,7 @@ import mysql.connector
 app=Flask(__name__, template_folder='C:/Users/way2wealth/Desktop/IWAS/Flask/frontend') #Change the path to the frontend folder
 
 connection = mysql.connector.connect( host='localhost', port='3306', 
-                                     user = 'root', password = 'nagag0410?', 
+                                     user = 'root', password = 'password123', 
                                      database = 'iwas') #Password has to be changed
 cur = connection.cursor()
 
