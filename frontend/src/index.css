@@ -29,13 +29,18 @@ h5 {font-size: 1.333rem; /* 21.28px */}
 small {font-size: 0.750rem; /* 12px */}
 
 button {
-    padding: 10px 20px;
+    padding: 15px 20px;
     margin: 0px 10px;
+    border-radius: 5px;
 }
 
 @layer components {
     .btn-default-red {
-        @apply h-full hover:bg-white hover:text-primary transition-colors;
+        @apply hover:bg-white hover:text-primary transition-colors;
+    }
+
+    .btn-default-white {
+        @apply text-black hover:text-white hover:bg-primary transition-colors;
     }
 
     .btn-white {

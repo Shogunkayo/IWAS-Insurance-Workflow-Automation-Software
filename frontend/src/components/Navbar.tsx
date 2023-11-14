@@ -2,28 +2,40 @@ import Login from "./Login";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { logout, setOpen } from "../redux/features/authSlice";
-import axios from "axios";
+import { setView } from "../redux/features/viewSlice";
+import { useEffect } from "react";
+import SubNav from "./SubNav";
 
-type Props = {}
-
-const Navbar = (props: Props) => {
+const Navbar = () => {
     const auth = useSelector((state: RootState) => state.auth)
+    const curView = useSelector((state: RootState) => state.view.currentView)
     const dispatch = useDispatch()
+    
+    useEffect(() => {
+        if (!auth.user && (curView === 'personal' || curView === 'business' || curView === 'corporate')) {
+            dispatch(setView('home'))
+            dispatch(setOpen(true))
+        }
+    }, [auth, curView, dispatch])
+    
+    const navItems = ['home', 'personal', 'business', 'corporate', 'about', 'support']
+    const homeNavItems = ['Explore Products', 'Grab Deals', 'Bank Smart', 'Knowledge Hub']
+    const personalNavItems = ['Purchase Policy', 'Claim Policy', 'Dashboard', 'Account Management']
+    const supportNavItems = ['Contact Sales Executive', 'Chatbot']
 
     return (
-        <nav className="z-10">
+        <nav className="z-10 flex flex-col">
             <div className="bg-primary p-1 relative text-white flex justify-around items-stretch">
                 <div>
                     <h2>IWAS</h2>
                 </div>
-                <div>
-                    <button className="btn-default-red">Home</button>
-                    <button className="btn-default-red">Personal</button>
-                    <button className="btn-default-red">Business</button>
-                    <button className="btn-default-red">About Us</button>
-                    <button className="btn-default-red">Support</button>
+                <div className="mt-2">
+                    <button className="hidden border-b-2 border-white"></button>
+                    {navItems.map((item, index) => (
+                        <button key={index} className={`btn-default-red ${curView === item && "border-b-2 border-white"}`} onClick={() => dispatch(setView(item))}>{item.charAt(0).toUpperCase() + item.slice(1)}</button>
+                    ))}
                 </div>
-                <div className="mt-4">
+                <div className="mt-2">
                     {!auth.user && (
                         <>
                             <button className="btn-white" onClick={() => dispatch(setOpen(true))}>Login</button>
@@ -36,6 +48,11 @@ const Navbar = (props: Props) => {
                         </>
                     )}
                 </div>
+            </div>
+            <div className="bg-white shadow-xl p-2 w-full">
+                {curView === 'home' && <SubNav navItems={homeNavItems}></SubNav>}
+                {curView === 'personal' && <SubNav navItems={personalNavItems}></SubNav>}
+                {curView === 'support' && <SubNav navItems={supportNavItems}></SubNav>}
             </div>
             {auth.isOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
