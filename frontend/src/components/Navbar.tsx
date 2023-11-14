@@ -1,24 +1,20 @@
-import { useState } from "react";
 import Login from "./Login";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { logout, setOpen } from "../redux/features/authSlice";
+import axios from "axios";
 
 type Props = {}
 
 const Navbar = (props: Props) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
+    const auth = useSelector((state: RootState) => state.auth)
+    const dispatch = useDispatch()
 
     return (
         <nav className="z-10">
             <div className="bg-primary p-1 relative text-white flex justify-around items-stretch">
                 <div>
-                    <h2>BIG BULLS</h2>
+                    <h2>IWAS</h2>
                 </div>
                 <div>
                     <button className="btn-default-red">Home</button>
@@ -28,16 +24,25 @@ const Navbar = (props: Props) => {
                     <button className="btn-default-red">Support</button>
                 </div>
                 <div className="mt-4">
-                    <button className="btn-white" onClick={openModal}>Login</button>
-                    <button className="btn-white">Signup</button>
+                    {!auth.user && (
+                        <>
+                            <button className="btn-white" onClick={() => dispatch(setOpen(true))}>Login</button>
+                            <button className="btn-white">Signup</button>
+                        </>
+                    )}
+                    {auth.user && (
+                        <>
+                            <button className="btn-white" onClick={() => dispatch(logout())}>Logout</button>
+                        </>
+                    )}
                 </div>
             </div>
-            {isModalOpen && (
+            {auth.isOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
                     <div className="relative flex flex-col justify-around">
                         <button
                             type="button"
-                            onClick={closeModal}
+                            onClick={() => dispatch(setOpen(false))}
                             className="bg-secondary text-white hover:bg-black py-2 px-4 rounded mt-4 top-5 right-5 w-1/2 mx-auto"
                         >
                             Close

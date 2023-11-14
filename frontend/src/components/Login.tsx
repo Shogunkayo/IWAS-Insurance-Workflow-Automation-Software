@@ -1,17 +1,39 @@
+import axios from 'axios';
 import { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { ToastContainer, ToastOptions, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { setOpen, setUser } from '../redux/features/authSlice';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const dispatch = useDispatch()
+
+    const toast_error_config: ToastOptions = {
+        position: 'top-center',
+        autoClose:5000,
+        theme:'light',
+        type:'error'
+    }
 
     const handleLogin = () => {
         if (email === '' || password === '')
-            return toast("Please enter both email and password.", {position: 'top-center', autoClose:5000, theme:'light', type:"error"})
+            return toast("Please enter both email and password.", toast_error_config)
+        
+        axios.post("http://localhost:5000/login", JSON.stringify({email, password}), {headers: {'Content-Type': 'application/json'}})
+            .then(response => {
+                if (!response.data || !response.data.token || !response.data.uid)
+                    return toast("Server error. Please try later", toast_error_config)
+                
+                dispatch(setUser({'token': response.data.token, 'uid': response.data.uid, 'email': email}))
+                dispatch(setOpen(false)) 
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        
 
-        console.log('Email:', email);
-        console.log('Password:', password);
         setEmail('');
         setPassword('');
     };
