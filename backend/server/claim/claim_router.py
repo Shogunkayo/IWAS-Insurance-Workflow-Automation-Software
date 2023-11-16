@@ -5,4 +5,3 @@ class ClaimRouter:
         self.appraiser_id = []
         self.verifier_id = []
         self.ajuster_id = []
-        
