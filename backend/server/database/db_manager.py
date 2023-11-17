@@ -1,3 +1,5 @@
+## Remove all comments that start with 2 hash like this
+
 from functools import wraps
 import MySQLdb
 from flask import jsonify
@@ -16,6 +18,9 @@ class DatabaseManager:
                 @mongo_host = host address of the mongo server
                 @mongo_uname = username for the mongo server
                 @mongo_pw = password of @mongo_uname for the mongo server
+            Instance Attributes:
+                @sql_db = connection to the sql database
+                @mongo_db = connection to the mongo database
         '''
         self.sql_host = sql_host
         self.sql_uname = sql_uname
@@ -76,30 +81,149 @@ class DatabaseManager:
     def getPassword(self, email, cur):
         '''
             Function to retrieve user id and hashed password of @email
+            Queries the @Users table
             Parameters:
                 @email = email id of the user
                 @cur = database cursor
             Returns:
                 tuple of DB_Query and status code
-                DB_Query: tuple =  (user id, password)
+                DB_Query: (uid, password)
         '''
         cur.execute(f"SELECT uid, password FROM users WHERE email='{email}'")
         return cur.fetchone(), 200
 
-    def addUser(self):
+    def createUser(self):
+        # optional
         pass
 
-    def removeUser(self):
+    def getUser(self, uid):
+        '''
+            Function to retrieve all user details of @uid.
+            Queries the @Users table
+            Parameters:
+                @uid = user id
+            Returns:
+                tuple of DB_Query and status code
+            DB_Query: (uid, email, firstname, lastname, aadhaarid, role, dob,
+                    phoneno, gender, address, occupation, employment_status,
+                    employment_name)
+        '''
+
+    def updateUser(self, uid, field, value):
+        '''
+            Function to update an attribute of @uid
+            Queries the @Users table
+            Parameters:
+                @uid = user id
+                @field = attribute of@uid to update
+                @value = value to replace with
+            Returns:
+                tuple of DB_Query and status code
+            DB_Query: (uid, field, value)
+        '''
+        ## to update multiple values, discuss with sathvik on how you want to
+        ## implement. Either iterate through each field in 
+        ## @ProfileManager.changeProfile (easier to implement, but handling 
+        ## errors might become tricky), or find a way for bulk update in sql
+        ## (idk how to do this)
         pass
 
-    def addPolicy(self, pid, startDate, endDate, premium, policyName, policyStatus, trackingStatus, paymentInfo, policyType):
+    def getPolicy(self):
+        '''
+            Function to retrieve the details of policies that are available
+            (not expired) for purchase
+            Queries the @Policies_Available table
+            Returns:
+                tuple of DB_Qeury and status code
+            DB_Query: [(policyName, policyType, policyPremium,
+                        policyDurationMonths, claimProcess, coverageDetails,
+                        renewalTerms),]
+        '''
         pass
 
-    def removePolicy(self):
+    def storePolicy(self, uid, pid, policyDetails):
+        '''
+            Function that stores the mapping of @uid and @pid, stores the @pid,
+            and the relevant information based on the @policyType
+            Queries the @UsersPolicies, @Policies, @VehiclePolicies,
+            @HealthPolicies
+            Parameters:
+                @uid = user id
+                @pid = policy id
+                @policyDetails = PolicyReq dict
+            Returns:
+                tuple of DB_Query and status code
+
+            PolicyReq:
+                @pid:
+                    @pid = policy id
+                    @purchaseDate = date of purchase of policy
+                    @startDate = date from which policy starts
+                    @endDate = date on which policy expires
+                    @premium = premium of the policy
+                    @policyName = name of the policy
+                    @policyStatus = status of the policy for the user
+                    @trackingStatus = status of the policy in the router
+                    @paymentInfo = payment information
+                    @policyType = type of the policy
+                @type:
+                    On @policyType = 'health':
+                        @pid = policy id
+                        @allergies
+                        @medicalCondtions
+                        @smokingStatus
+                        @alcoholStatus
+                        @bloodGroup
+                    On @policyType = 'vehicle':
+                        @pid = policy id
+                        @licencePlateNo
+                        @driversLicenceId
+                        @vehicleType
+                        @yearOfManufaction
+                        @vehicleCompany
+                        @vehicleModel
+                        @currentMileage
+                        @vehicleUsage
+                        @DLPdfUrl = filepath to the driver's licence document
+                        @vehiclePdfUrl = filepath to vehicle photo document
+                        @vehicleCertPdfUrl = filepath to the vehicle's
+                            registration certificate document
+
+            DB_Query: (uid, pid)
+        '''
+        ## this function is called after the purchase has been approved and 
+        ## finalized. Mongodb will take care of the actual purchase part 
         pass
 
-    def updatePolicy(self):
+    def updatePolicy(self, pid, field=None, value=None, ptype=None, ptypeField=None, ptypeValue=None):
+        '''
+            Function to change the details of @pid
+            Queries:
+                If @field is specified, @value has to be specified, and
+                @Policies table is queried.
+                If @ptypeField is specified, @pTypeValue has to be specified,
+                and the respective policy type table is queried
+            Parameters:
+                @pid = policy id
+                @field = attribute of @pid to update
+                @value = value to replace @field with
+                @ptype = policy type of @pid
+                @ptypeField = attribute of the respective policy type table
+                    to update
+                @ptypeValue = value to replace @ptypeField with
+            Returns:
+                tuple of DB_Query and status code
+            DB_Query: (@pid, @field, @value, @ptype, @ptypeField, @ptypeValue)
+        '''
         pass
 
-    def getPolicyType(self):
-        pass
+    def getUserPolicy(self, uid):
+        '''
+            Function to retrieve all policies owned by @uid
+            Queries the @UsersPolicies table
+            Parameters:
+                @uid = user id
+            Returns:
+                tuple of DB_Query and status code
+            DB_Query: [(@pid),]
+        '''

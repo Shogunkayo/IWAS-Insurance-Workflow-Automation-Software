@@ -5,7 +5,7 @@ class PolicyManager:
         ## add class variables and documentation as required
         pass
 
-    def viewPolicy(self, uid, db):
+    def viewUserPolicy(self, uid, db):
         '''
             Function to retrieve information about all policies
             owned by @uid
@@ -31,7 +31,7 @@ class PolicyManager:
         ## function according to the documentation above
         pass
 
-    def cancelPolicy(self, uid, pid, db):
+    def cancelUserPolicy(self, uid, pid, db):
         '''
             Function to cancel policy @pid owned by @uid
             Parameters:
