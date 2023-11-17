@@ -92,10 +92,12 @@ class DatabaseManager:
         cur.execute(f"SELECT uid, password FROM users WHERE email='{email}'")
         return cur.fetchone(), 200
 
+    @_sqlCursor
     def createUser(self):
         # optional
         pass
 
+    @_sqlCursor
     def getUser(self, uid):
         '''
             Function to retrieve all user details of @uid.
@@ -108,7 +110,22 @@ class DatabaseManager:
                     phoneno, gender, address, occupation, employment_status,
                     employment_name)
         '''
+        pass
 
+    @_sqlCursor
+    def getUserByRole(self, role):
+        '''
+            Function to retrieve the @uid s belonging to @role
+            Queries the @Users table
+            Parameters:
+                @role = role to query
+            Returns:
+                tuple of DB_Query and status code
+            DB_Query: [@uid, ]
+        '''
+        pass
+
+    @_sqlCursor
     def updateUser(self, uid, field, value):
         '''
             Function to update an attribute of @uid
@@ -128,6 +145,7 @@ class DatabaseManager:
         ## (idk how to do this)
         pass
 
+    @_sqlCursor
     def getPolicy(self):
         '''
             Function to retrieve the details of policies that are available
@@ -141,6 +159,7 @@ class DatabaseManager:
         '''
         pass
 
+    @_sqlCursor
     def storePolicy(self, uid, pid, policyDetails):
         '''
             Function that stores the mapping of @uid and @pid, stores the @pid,
@@ -195,6 +214,7 @@ class DatabaseManager:
         ## finalized. Mongodb will take care of the actual purchase part 
         pass
 
+    @_sqlCursor
     def updatePolicy(self, pid, field=None, value=None, ptype=None, ptypeField=None, ptypeValue=None):
         '''
             Function to change the details of @pid
@@ -217,6 +237,7 @@ class DatabaseManager:
         '''
         pass
 
+    @_sqlCursor
     def getUserPolicy(self, uid):
         '''
             Function to retrieve all policies owned by @uid
@@ -227,3 +248,6 @@ class DatabaseManager:
                 tuple of DB_Query and status code
             DB_Query: [(@pid),]
         '''
+        pass
+
+
