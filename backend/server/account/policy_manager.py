@@ -5,12 +5,13 @@ class PolicyManager:
         ## add class variables and documentation as required
         pass
 
-    def viewPolicy(self, uid):
+    def viewPolicy(self, uid, db):
         '''
             Function to retrieve information about all policies
             owned by @uid
             Parameters:
                 @uid = user id
+                @db = database manager
             Returns:
                 tuple of list of JSON objects and status code
             JSON object:
@@ -30,12 +31,13 @@ class PolicyManager:
         ## function according to the documentation above
         pass
 
-    def cancelPolicy(self, uid, pid):
+    def cancelPolicy(self, uid, pid, db):
         '''
             Function to cancel policy @pid owned by @uid
             Parameters:
                 @uid = user id
                 @pid = policy id
+                @db = database manager
             Returns:
                 tuple of JSON object and status code
             JSON object:
@@ -46,7 +48,8 @@ class PolicyManager:
                     @penalty = amount deducted from refund
         '''
         ## complete this function. You will have to calculate a particular
-        ## penalty amount based on the type of policy, date of purchase etc
+        ## penalty amount based on the type of policy, date of purchase, 
+        ## premium of the policy, etc
         pass
 
     def renewPolicy(self):

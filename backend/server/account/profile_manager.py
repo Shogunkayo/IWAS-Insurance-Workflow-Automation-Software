@@ -5,11 +5,12 @@ class ProfileManager:
         ## add class variables and documentation as required
         pass
 
-    def getProfile(self, uid):
+    def getProfile(self, uid, db):
         '''
             Function to retrieve information about the user
             Parameters:
                 @uid = user id
+                @db = database manager
             Returns:
                 tuple of JSON object and status code
             JSON object:
@@ -30,7 +31,7 @@ class ProfileManager:
         ## complete this function
         pass
 
-    def changeProfile(self, uid, changeInfo):
+    def changeProfile(self, uid, db, changeInfo):
         ## either find a way to change information using a single function,
         ## or create a seperate function for each field. The change info
         ## parameter changes according to how you implement
@@ -42,6 +43,7 @@ class ProfileManager:
             Function to change information about the user
             Parameters:
                 @uid = user id
+                @db = database manager
                 @changeInfo ## complete this
         '''
         pass
