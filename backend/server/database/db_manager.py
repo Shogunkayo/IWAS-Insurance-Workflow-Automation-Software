@@ -89,7 +89,7 @@ class DatabaseManager:
                 tuple of DB_Query and status code
                 DB_Query: (uid, password)
         '''
-        cur.execute(f"SELECT uid, password FROM users WHERE email='{email}'")
+        cur.execute(f"SELECT uid, password FROM Users WHERE email='{email}'")
         return cur.fetchone(), 200
 
     @_sqlCursor
@@ -98,7 +98,7 @@ class DatabaseManager:
         pass
 
     @_sqlCursor
-    def getUser(self, uid):
+    def getUser(self, uid, cur):
         '''
             Function to retrieve all user details of @uid.
             Queries the @Users table
@@ -110,10 +110,11 @@ class DatabaseManager:
                     phoneno, gender, address, occupation, employment_status,
                     employment_name)
         '''
-        pass
+        cur.execute(f"SELECT * FROM Users WHERE uid='{uid}'")
+        return cur.fetchone(), 200
 
     @_sqlCursor
-    def getUserByRole(self, role):
+    def getUserByRole(self, role, cur):
         '''
             Function to retrieve the @uid s belonging to @role
             Queries the @Users table
@@ -123,10 +124,11 @@ class DatabaseManager:
                 tuple of DB_Query and status code
             DB_Query: [@uid, ]
         '''
-        pass
+        cur.execute(f"SELECT * FROM Users WHERE role='{role}'")
+        return cur.fetchall(), 200
 
     @_sqlCursor
-    def updateUser(self, uid, field, value):
+    def updateUser(self, uid, field, value, cur):
         '''
             Function to update an attribute of @uid
             Queries the @Users table
@@ -143,10 +145,11 @@ class DatabaseManager:
         ## @ProfileManager.changeProfile (easier to implement, but handling 
         ## errors might become tricky), or find a way for bulk update in sql
         ## (idk how to do this)
-        pass
+        cur.execute(f"UPDATE Users SET '{field}'='{value}' WHERE uid = '{uid}'")
+        
 
     @_sqlCursor
-    def getPolicy(self):
+    def getPolicy(self, cur):
         '''
             Function to retrieve the details of policies that are available
             (not expired) for purchase
@@ -155,12 +158,13 @@ class DatabaseManager:
                 tuple of DB_Qeury and status code
             DB_Query: [(policyName, policyType, policyPremium,
                         policyDurationMonths, claimProcess, coverageDetails,
-                        renewalTerms),]
+                        renewalTerms, expired),]
         '''
-        pass
+        cur.execute(f"SELECT * FROM Policies_Available WHERE expired = FALSE")
+        return cur.fetchall(), 200
 
     @_sqlCursor
-    def storePolicy(self, uid, pid, policyDetails):
+    def storePolicy(self, uid, pid, policyDetails, cur):
         '''
             Function that stores the mapping of @uid and @pid, stores the @pid,
             and the relevant information based on the @policyType
@@ -215,7 +219,7 @@ class DatabaseManager:
         pass
 
     @_sqlCursor
-    def updatePolicy(self, pid, field=None, value=None, ptype=None, ptypeField=None, ptypeValue=None):
+    def updatePolicy(self, pid, field, value, ptype, ptypeField, ptypeValue, cur):
         '''
             Function to change the details of @pid
             Queries:
@@ -235,10 +239,32 @@ class DatabaseManager:
                 tuple of DB_Query and status code
             DB_Query: (@pid, @field, @value, @ptype, @ptypeField, @ptypeValue)
         '''
-        pass
+        if field != None and value == None:
+            return jsonify({'error': 'value not specified'}), 500
 
+        if ptypeField != None and ptypeValue == None:
+            return jsonify({'error': 'ptypeValue not specified'}), 500
+
+        if field and value:
+            try:
+                cur.execute(f"UPDATE Policies SET '{field}'='{value}' WHERE pid='{pid}'")
+
+            except:
+                return jsonify({'error': 'Invalid field or value'}), 500
+
+        if ptypeField and ptypeValue:
+            try:
+                if ptype == 'Vehicle' or ptype == 'vehicle':
+                    cur.execute(f"UPDATE Vehicle_Policies SET '{ptypeField}'='{ptypeValue}' WHERE pid='{pid}'")
+
+                elif ptype == 'Health' or ptype == 'health':
+                    cur.execute(f"UPDATE Health_Policies SET '{ptypeField}'='{ptypeValue}' WHERE pid='{pid}'")
+
+            except:
+                return jsonify({'error': 'Invalid field or input'}), 500
+        
     @_sqlCursor
-    def getUserPolicy(self, uid):
+    def getUserPolicy(self, uid, cur):
         '''
             Function to retrieve all policies owned by @uid
             Queries the @UsersPolicies table
@@ -248,6 +274,5 @@ class DatabaseManager:
                 tuple of DB_Query and status code
             DB_Query: [(@pid),]
         '''
-        pass
-
-
+        cur.execute(f"SELECT pid FROM User_Policies WHERE uid='{uid}'")
+        return cur.fetchall(), 200
