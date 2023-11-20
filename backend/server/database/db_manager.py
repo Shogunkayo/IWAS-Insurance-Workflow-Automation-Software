@@ -164,6 +164,11 @@ class DatabaseManager:
         return cur.fetchall(), 200
 
     @_sqlCursor
+    def getPolicyByPid(self, pid, cur):
+        cur.execute(f"SELECT * FROM Policies WHERE pid='{pid}'")
+        return cur.fetchone(), 200
+
+    @_sqlCursor
     def storePolicy(self, uid, pid, policyDetails, cur):
         '''
             Function that stores the mapping of @uid and @pid, stores the @pid,
@@ -252,7 +257,7 @@ class DatabaseManager:
             except:
                 return jsonify({'error': 'Invalid field or value'}), 500
 
-        if ptypeField and ptypeValue:
+        if pTypeField and pTypeValue:
             try:
                 if ptype == 'Vehicle' or ptype == 'vehicle':
                     cur.execute(f"UPDATE Vehicle_Policies SET '{ptypeField}'='{ptypeValue}' WHERE pid='{pid}'")
