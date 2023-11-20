@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
+from account.policy_manager import PolicyManager
+from account.profile_manager import ProfileManager
 from database.db_manager import DatabaseManager
 from session.auth import SessionManager
 
@@ -33,6 +35,9 @@ session_manager = SessionManager(
     secret_key=os.getenv('SECRET_KEY'),
 )
 
+policy_manager = PolicyManager()
+profile_manager = ProfileManager()
+
 # -------------- Server Routes
 @app.route('/', methods=['GET'])
 def root():
@@ -58,14 +63,16 @@ def signup():
 
 # --- Profile Management Routes
 @app.route('/profile/get', methods=['POST'])
-@session_manager.validateJWT
 def getAccInfo():
-    return jsonify({'error': 'Feature not available'}), 500
+    uid = request.get_json().get('uid')
+    return profile_manager.getProfile(uid, database_manager)
 
 @app.route('/profile/change', methods=['POST'])
-@session_manager.validateJWT
 def changeAccInfo():
-    return jsonify({'error': 'Feature not available'}), 500
+    request_data = request.get_json()
+    uid = request_data.get('uid')
+    change_info = request_data.get('changeInfo')
+    return profile_manager.changeProfile(uid, database_manager, change_info)
 
 @app.route('/profile/addperson', methods=['POST'])
 @session_manager.validateJWT
@@ -74,14 +81,16 @@ def addPersonToAcc():
 
 # --- Policy Management Routes
 @app.route('/profile/policy/get', methods=['POST'])
-@session_manager.validateJWT
 def getPolInfo():
-    return jsonify({'error': 'Feature not available'}), 500
+    uid = request.get_json().get('uid')
+    return policy_manager.viewUserPolicy(uid, database_manager)
 
 @app.route('/profile/policy/cancel', methods=['POST'])
-@session_manager.validateJWT
 def cancelPol():
-    return jsonify({'error': 'Feature not available'}), 500
+    request_data = request.get_json()
+    uid = request_data.get('uid')
+    pid = request_data.get('pid')
+    return policy_manager.cancelUserPolicy(uid, pid, database_manager)
 
 @app.route('/profile/policy/renew', methods=['POST'])
 @session_manager.validateJWT

@@ -1,5 +1,3 @@
-## Remove all comments that start with 2 hash like this
-
 from functools import wraps
 import MySQLdb
 from flask import jsonify
@@ -134,19 +132,13 @@ class DatabaseManager:
             Queries the @Users table
             Parameters:
                 @uid = user id
-                @field = attribute of@uid to update
+                @field = attribute of @uid to update
                 @value = value to replace with
             Returns:
                 tuple of DB_Query and status code
             DB_Query: (uid, field, value)
         '''
-        ## to update multiple values, discuss with sathvik on how you want to
-        ## implement. Either iterate through each field in 
-        ## @ProfileManager.changeProfile (easier to implement, but handling 
-        ## errors might become tricky), or find a way for bulk update in sql
-        ## (idk how to do this)
-        cur.execute(f"UPDATE Users SET '{field}'='{value}' WHERE uid = '{uid}'")
-        
+        cur.execute(f"UPDATE Users SET {field}='{value}' WHERE uid='{uid}'")
 
     @_sqlCursor
     def getPolicy(self, cur):
@@ -160,7 +152,7 @@ class DatabaseManager:
                         policyDurationMonths, claimProcess, coverageDetails,
                         renewalTerms, expired),]
         '''
-        cur.execute(f"SELECT * FROM Policies_Available WHERE expired = FALSE")
+        cur.execute("SELECT * FROM Policies_Available WHERE expired = FALSE")
         return cur.fetchall(), 200
 
     @_sqlCursor
@@ -244,10 +236,10 @@ class DatabaseManager:
                 tuple of DB_Query and status code
             DB_Query: (@pid, @field, @value, @ptype, @ptypeField, @ptypeValue)
         '''
-        if field != None and value == None:
+        if field is not None and value is None:
             return jsonify({'error': 'value not specified'}), 500
 
-        if ptypeField != None and ptypeValue == None:
+        if ptypeField is not None and ptypeValue is None:
             return jsonify({'error': 'ptypeValue not specified'}), 500
 
         if field and value:
@@ -257,7 +249,7 @@ class DatabaseManager:
             except:
                 return jsonify({'error': 'Invalid field or value'}), 500
 
-        if pTypeField and pTypeValue:
+        if ptypeField and ptypeValue:
             try:
                 if ptype == 'Vehicle' or ptype == 'vehicle':
                     cur.execute(f"UPDATE Vehicle_Policies SET '{ptypeField}'='{ptypeValue}' WHERE pid='{pid}'")
@@ -267,7 +259,7 @@ class DatabaseManager:
 
             except:
                 return jsonify({'error': 'Invalid field or input'}), 500
-        
+
     @_sqlCursor
     def getUserPolicy(self, uid, cur):
         '''
