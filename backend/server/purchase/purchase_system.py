@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 ## Remove all comments that start with 2 hash like this
 
 from flask import jsonify
 
-=======
->>>>>>> faf4da737bc5710a140962b7cd1ac9e7afb3b935
 class PurchaseSystem:
     def __init__(self, n_routers, max_router_load, db):
         self.n_routers = n_routers
@@ -34,9 +31,9 @@ class PurchaseSystem:
                     @coverageDetails = description of the coverage of policy
                     @renewalTerms = description of renewal terms of policy
         '''
-        
+
         policies_query, status_code = db.getPolicy()
-        
+
         if status_code != 200:
             return (({'error': 'Error retrieving policies'},)), 500
 
@@ -53,7 +50,7 @@ class PurchaseSystem:
             }
             policies.append(policy_data)
 
-        return (policies,), 200  
+        return (policies,), 200
 
 
     def getDocVerifiers(self, db):
@@ -85,7 +82,7 @@ class PurchaseSystem:
             Returns:
                 list of policy approval controller ids
         '''
-        
+
         try:
             # Assuming you have a method in your database manager to get approvers
             approver_ids = db.getApprovers()
