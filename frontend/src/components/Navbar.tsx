@@ -5,6 +5,7 @@ import { logout, setOpen } from "../redux/features/authSlice";
 import { setView } from "../redux/features/viewSlice";
 import { useEffect } from "react";
 import SubNav from "./SubNav";
+import axios from "axios";
 
 const Navbar = () => {
     const auth = useSelector((state: RootState) => state.auth)
@@ -17,6 +18,16 @@ const Navbar = () => {
             dispatch(setOpen(true))
         }
     }, [auth, curView, dispatch])
+
+    const handleJWTAuth = () => {
+        axios.post("http://localhost:5000/verifyAuth", JSON.stringify({"token": "d8sahy823hn12lkndas"}), {headers: {'Content-Type': 'application/json'}})
+            .then(response => {
+                console.log(response.data)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
     
     const navItems = ['home', 'personal', 'business', 'corporate', 'about', 'support']
     const homeNavItems = ['Explore Products', 'Grab Deals', 'Bank Smart', 'Knowledge Hub']
@@ -36,6 +47,7 @@ const Navbar = () => {
                     ))}
                 </div>
                 <div className="mt-2">
+                    <button className="btn-white" onClick={handleJWTAuth}>JWT AUTH</button>
                     {!auth.user && (
                         <>
                             <button className="btn-white" onClick={() => dispatch(setOpen(true))}>Login</button>

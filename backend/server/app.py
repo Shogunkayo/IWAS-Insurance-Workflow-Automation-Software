@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
-from account.policy_manager import PolicyManager
 from account.profile_manager import ProfileManager
 from database.db_manager import DatabaseManager
 from session.auth import SessionManager
@@ -35,7 +34,6 @@ session_manager = SessionManager(
     secret_key=os.getenv('SECRET_KEY'),
 )
 
-policy_manager = PolicyManager()
 profile_manager = ProfileManager()
 
 # -------------- Server Routes
@@ -61,6 +59,11 @@ def login():
 def signup():
     return jsonify({'error': 'Feature not available'}), 500
 
+@app.route('/verifyAuth', methods=['POST'])
+@session_manager.validateJWT
+def verifyAuth():
+    return jsonify({'message': 'JWT Token is present. Visited Protected Route'})
+
 # --- Profile Management Routes
 @app.route('/profile/get', methods=['POST'])
 def getAccInfo():
@@ -82,15 +85,11 @@ def addPersonToAcc():
 # --- Policy Management Routes
 @app.route('/profile/policy/get', methods=['POST'])
 def getPolInfo():
-    uid = request.get_json().get('uid')
-    return policy_manager.viewUserPolicy(uid, database_manager)
+    return jsonify({'error': 'Feature not available'}), 500
 
 @app.route('/profile/policy/cancel', methods=['POST'])
 def cancelPol():
-    request_data = request.get_json()
-    uid = request_data.get('uid')
-    pid = request_data.get('pid')
-    return policy_manager.cancelUserPolicy(uid, pid, database_manager)
+    return jsonify({'error': 'Feature not available'}), 500
 
 @app.route('/profile/policy/renew', methods=['POST'])
 @session_manager.validateJWT

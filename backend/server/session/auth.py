@@ -35,15 +35,17 @@ class SessionManager:
                     @error = error message
             '''
             # Retrieve JWT token from request
-            token = request.get_json()['token']
-            if not token:
-                return jsonify({'error': 'Missing JWT', 'status':-1}), 400
+            try:
+                token = request.get_json()['token']
+            except Exception as e:
+                print("ERROR: ", e)
+                return jsonify({'error': 'Missing JWT'}), 400
 
             try:
                 # Attempts to validatee the JWT token. Raises an exception on decoding errors
                 _ = jwt.decode(token, self._secret_key, algorithms=['HS256'])
             except:
-                return jsonify({'error': 'Invalid JWT', 'status':-1}), 401
+                return jsonify({'error': 'Invalid JWT'}), 401
 
             # If the token is valid, call the original function
             return f(*args, **kwargs)
