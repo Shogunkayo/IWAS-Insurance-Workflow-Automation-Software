@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+## Remove all comments that start with 2 hash like this
+
+from flask import jsonify
+
+=======
+>>>>>>> faf4da737bc5710a140962b7cd1ac9e7afb3b935
 class PurchaseSystem:
     def __init__(self, n_routers, max_router_load, db):
         self.n_routers = n_routers
@@ -27,8 +34,27 @@ class PurchaseSystem:
                     @coverageDetails = description of the coverage of policy
                     @renewalTerms = description of renewal terms of policy
         '''
-        ## implement this function
-        pass
+        
+        policies_query, status_code = db.getPolicy()
+        
+        if status_code != 200:
+            return (({'error': 'Error retrieving policies'},)), 500
+
+        policies = []
+        for policy in policies_query:
+            policy_data = {
+                'pName': policy[0],
+                'pType': policy[1],
+                'pDurationMonths': policy[3],
+                'premium': policy[2],
+                'claimProcess': policy[4],
+                'coverageDetails': policy[5],
+                'renewalTerms': policy[6]
+            }
+            policies.append(policy_data)
+
+        return (policies,), 200  
+
 
     def getDocVerifiers(self, db):
         '''
@@ -39,8 +65,16 @@ class PurchaseSystem:
             Returns:
                 list of document verifier ids
         '''
-        ## implement this function
-        pass
+        try:
+            # Assuming you have a method in your database manager to get document verifiers
+            doc_verifiers = db.getDocumentVerifiers()
+
+            # Assuming the method returns a list of document verifier ids
+            return doc_verifiers
+
+        except Exception as e:
+            print(f"Error retrieving document verifiers: {e}")
+            return []  # Return an empty list in case of an error
 
     def getApprovers(self, db):
         '''
@@ -51,8 +85,17 @@ class PurchaseSystem:
             Returns:
                 list of policy approval controller ids
         '''
-        ## implement this function
-        pass
+        
+        try:
+            # Assuming you have a method in your database manager to get approvers
+            approver_ids = db.getApprovers()
+
+            # Assuming the method returns a list of policy approval controller ids
+            return approver_ids
+
+        except Exception as e:
+            print(f"Error retrieving approvers: {e}")
+            return []  # Return an empty list in case of an error
 
     def storeFile(self, file):
         '''
