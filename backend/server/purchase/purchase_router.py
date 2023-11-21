@@ -5,7 +5,7 @@ class PurchaseRouter:
         self.docVerPtr = 0
         self.approverIds = approverIds
         self.approverPtr = 0
-        self.policies = []
+        self.purchaseReq = []
 
     def sendToDocVer(self, purchaseReq):
         pass
