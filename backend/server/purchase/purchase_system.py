@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 ## Remove all comments that start with 2 hash like this
 
 from flask import jsonify
 
+=======
+>>>>>>> faf4da737bc5710a140962b7cd1ac9e7afb3b935
 class PurchaseSystem:
     def __init__(self, n_routers, max_router_load, db):
         self.n_routers = n_routers
@@ -10,7 +13,6 @@ class PurchaseSystem:
         self.docVerIds = self.getDocVerifiers(db)
         self.approverIds = self.getApprovers(db)
         self.bufferReq = []
-        ## add more class variables if required and documentation
 
     def getAvailablePolicies(self, db):
         '''

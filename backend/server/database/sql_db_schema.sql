@@ -1,9 +1,9 @@
 CREATE DATABASE iwas_database;
-USE iwas_database;
+use iwas_database;
 
 CREATE TABLE Users(
             uid varchar(20),
-            password varchar(30),
+            password binary(60),
             email varchar(50),
             firstname varchar(50),
             lastname varchar(50),
